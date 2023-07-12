@@ -13,8 +13,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    volumes:
-      - ${PWD}:/home/ocr
     ports:
-      - 9832:9832
-    command: tail -f /dev/null
+      - 9533:9533
+    command: uvicorn main:app --host 0.0.0.0 --port 9533

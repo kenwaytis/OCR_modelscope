@@ -8,3 +8,5 @@ RUN pip install \
     rm -rf /root/.cache/pip/*
 
 WORKDIR /home/ocr
+
+COPY . .

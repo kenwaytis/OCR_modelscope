@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: paidax/ocr:0.5
+    image: paidax/ocr:0.5.1
     container_name: ocr
     deploy:
       resources:

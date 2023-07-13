@@ -1,19 +1,26 @@
-image: ubuntu:latest
+image: docker:20.10.16
 
-stages: 
-  - build&push
+services:
+  - name: docker:20.10.16-dind
+    alias: docker
 
-build and push:
-  stage: build&push
+stages:
+  - build
+  - push
+
+before_script:
+  - docker info
+
+build:
+  stage: build
   script:
-    - apt update
-    - apt -y install git curl
-    - curl -fsSL https://get.docker.com -o get-docker.sh
-    - chmod +x get-docker.sh
-    - ./get-docker.sh
-    - git clone $CI_PROJECT_URL
-    - cd $(echo $CI_PROJECT_NAME | cut -d'/' -f2)
-    - docker pull hello-world:latest
-    - docker tag hello-world:latest $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_SHA
-    - docker push $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_SHA
-    - echo "All jobs completed successfully."
+    - docker build -t $PRIVATE_ADDRESS:$CI_COMMIT_SHA .
+  only:
+    - main
+
+push:
+  stage: push
+  script:
+    - docker push $PRIVATE_ADDRESS:$CI_COMMIT_SHA
+  only:
+    - main

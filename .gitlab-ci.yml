@@ -5,22 +5,18 @@ services:
     alias: docker
 
 stages:
-  - build
-  - push
+  - build&push
 
 before_script:
   - docker info
 
-build:
-  stage: build
+build&push:
+  stage: build&push
   script:
     - docker build -t $PRIVATE_ADDRESS:$CI_COMMIT_SHA .
-  only:
-    - main
-
-push:
-  stage: push
-  script:
     - docker push $PRIVATE_ADDRESS:$CI_COMMIT_SHA
+    - docker tag $PRIVATE_ADDRESS:$CI_COMMIT_SHA $PRIVATE_ADDRESS:latest
+    - docker push $PRIVATE_ADDRESS:latest
+    - docker images
   only:
     - main

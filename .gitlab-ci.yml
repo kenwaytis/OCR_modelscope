@@ -1,18 +1,28 @@
-image: docker:latest
+image: docker:19.03.12
 
 services:
-  - name: docker:dind
-    command: ["--privileged"]
+  - docker:19.03.12-dind
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
 
 stages:
-  - build and push docker image
+  - build
+  - push
 
-docker build:
-  image: docker:latest
-  stage: build and push docker image
+before_script:
+  - docker info
+
+build:
+  stage: build
   script:
-    - docker build -t $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_TAG .
-    - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $PRIVATE_ADDRESS/$REPO_NAME:latest
-    - docker push $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_TAG
-    - docker push $PRIVATE_ADDRESS/$REPO_NAME:latest
+    - docker build -t $PRIVATE_ADDRESS:$CI_COMMIT_SHA .
+  only:
+    - master
 
+push:
+  stage: push
+  script:
+    - docker push $PRIVATE_ADDRESS:$CI_COMMIT_SHA
+  only:
+    - master

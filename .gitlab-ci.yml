@@ -1,13 +1,10 @@
 image: ubuntu:latest
 
 stages: 
-  - init         
-  - login
-  - build
-  - push
+  - all
 
-init-job:
-  stage: init
+all-jobs:
+  stage: all
   rules:
     - if: '$CI_COMMIT_TAG'
   script:
@@ -16,37 +13,16 @@ init-job:
     - curl -fsSL https://get.docker.com -o get-docker.sh
     - chmod +x get-docker.sh
     - ./get-docker.sh
-    - echo "init success."
-
-login-job:      
-  stage: login
-  rules:
-    - if: '$CI_COMMIT_TAG'
-  script:
     - git clone $CI_PROJECT_URL
     - cd $(echo $CI_PROJECT_NAME | cut -d'/' -f2)
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - echo "clone & login success."
-
-build-job:  
-  stage: build  
-  rules:
-    - if: '$CI_COMMIT_TAG'
-  script:
     - export REPO_NAME=$(echo $CI_PROJECT_NAME | cut -d'/' -f2)
     - docker build -t $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG .
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $DOCKER_USERNAME/$REPO_NAME:latest
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_TAG
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $PRIVATE_ADDRESS/$REPO_NAME:latest
-    - echo "build success."
-
-push-job:  
-  stage: push  
-  rules:
-    - if: '$CI_COMMIT_TAG'  
-  script:
     - docker push $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG
     - docker push $DOCKER_USERNAME/$REPO_NAME:latest
     - docker push $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_TAG
     - docker push $PRIVATE_ADDRESS/$REPO_NAME:latest
-    - echo "push success."
+    - echo "All jobs completed successfully."

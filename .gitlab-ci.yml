@@ -1,7 +1,8 @@
 image: docker:latest
 
 services:
-  - docker:dind
+  - name: docker:dind
+    command: ["--privileged"]
 
 stages:
   - build and push docker image

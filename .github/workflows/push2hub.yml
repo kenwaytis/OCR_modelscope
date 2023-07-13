@@ -9,7 +9,7 @@ jobs:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
-        
+
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
 
@@ -33,7 +33,6 @@ jobs:
         with:
           images: |
             ${{ secrets.DOCKER_USERNAME }}/${{ steps.repo_name.outputs.repo }}
-            ${{ secrets.PRIVATE_ADDRESS }}/${{ steps.repo_name.outputs.repo }}
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4

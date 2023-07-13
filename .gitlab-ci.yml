@@ -7,7 +7,7 @@ docker build:
   image: docker:latest
   stage: build and push docker image
   script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD docker.io
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - docker build -t $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG .
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $DOCKER_USERNAME/$REPO_NAME:latest
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $PRIVATE_ADDRESS/$REPO_NAME:$CI_COMMIT_TAG

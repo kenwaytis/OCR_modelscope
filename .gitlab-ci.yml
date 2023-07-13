@@ -1,7 +1,7 @@
-image: docker:19.03.12
+image: docker:latest
 
 services:
-  - docker:19.03.12-dind
+  - docker:dind
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"

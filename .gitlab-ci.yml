@@ -12,7 +12,7 @@ init-job:
     - if: '$CI_COMMIT_TAG'
   script:
     - apt update
-    - apt -y install git
+    - apt -y install git curl
     - curl -fsSL https://get.docker.com -o get-docker.sh
     - chmod +x get-docker.sh
     - ./get-docker.sh

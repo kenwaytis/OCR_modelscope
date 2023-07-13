@@ -15,7 +15,7 @@ all-jobs:
     - ./get-docker.sh
     - git clone $CI_PROJECT_URL
     - cd $(echo $CI_PROJECT_NAME | cut -d'/' -f2)
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
     - export REPO_NAME=$(echo $CI_PROJECT_NAME | cut -d'/' -f2)
     - docker build -t $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG .
     - docker tag $DOCKER_USERNAME/$REPO_NAME:$CI_COMMIT_TAG $DOCKER_USERNAME/$REPO_NAME:latest

@@ -72,9 +72,9 @@ POST
 
 **json description:**
 
-| field name | required or not | type      | note                     |
-| ---------- | --------------- | --------- | ------------------------ |
-| images     | yes             | list[str] | URL address of the image |
+| field name | required or not | type      | note                  |
+| ---------- | --------------- | --------- | --------------------- |
+| images     | yes             | list[str] | base64 encoded images |
 
 **Request json example:**
 

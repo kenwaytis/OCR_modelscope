@@ -59,10 +59,7 @@ async def prediction(items:Image):
         logger.error(e)
         res = {
             "msg": str(e), 
-            "results": [[{"confidence": 0,
-                          "text":"no text found",
-                          "text_region":[]
-                          }]],
+            "results": [],
             "status": "000"
         }
         return res

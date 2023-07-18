@@ -10,3 +10,5 @@ RUN pip install \
 WORKDIR /home/ocr
 
 COPY . .
+
+RUN python download_model.py

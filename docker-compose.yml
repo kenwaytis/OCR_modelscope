@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: paidax/ocr_modelscope:0.6.3
+    image: paidax/ocr_modelscope:0.7.1
     container_name: ocr
     deploy:
       resources:
@@ -15,4 +15,4 @@ services:
               capabilities: [gpu]
     ports:
       - 9533:9533
-    command: uvicorn main:app --host 0.0.0.0 --port 9533
+    command: tail -f /dev/null

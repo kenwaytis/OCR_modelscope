@@ -28,20 +28,6 @@ async def prediction(items:Image):
             img_binary = base64.b64decode(img_b64)
             buffer = np.frombuffer(img_binary,dtype=np.uint8)
             img = cv2.imdecode(buffer,flags=cv2.IMREAD_COLOR)
-
-
-            # 图片短边小于100时，按原比例放到到短边为100
-            height, width = img.shape[:2]
-            if min(height, width) < 100:
-                if height < width:
-                    new_height = 100
-                    new_width = int(width * new_height / height)
-                else:
-                    new_width = 100
-                    new_height = int(height * new_width / width)
-                logger.info("resize img")
-                img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
-
             det_result = ocr_detection(img)
             logger.debug(f"det_result: {det_result}")
             det_result = det_result['polygons'] 
@@ -73,7 +59,10 @@ async def prediction(items:Image):
         logger.error(e)
         res = {
             "msg": str(e), 
-            "results": ["no text found"],
+            "results": [[{"confidence": 0,
+                          "text":"no text found",
+                          "text_region":[]
+                          }]],
             "status": "000"
         }
         return res

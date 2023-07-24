@@ -19,6 +19,13 @@ app = FastAPI()
 class Image(BaseModel):
     images: List[str]
 
+def sort_result(polygons):
+    polygons = polygons.reshape(-1, 4, 2)
+    indices = np.lexsort((polygons[:, 0, 0], polygons[:, 0, 1]))
+    sorted_polygons = polygons[indices]
+    sorted_polygons = sorted_polygons.reshape(-1, 8)
+    return sorted_polygons
+
 @app.post("/predict/ocr_system")
 async def prediction(items:Image):
     try:
@@ -31,8 +38,7 @@ async def prediction(items:Image):
             det_result = ocr_detection(img)
             logger.debug(f"det_result: {det_result}")
             det_result = det_result['polygons'] 
-            logger.debug(f"det_result: {det_result}")
-            logger.debug(f"det_result.shape[0]: {det_result.shape[0]}")
+            det_result = sort_result(det_result)
             for i in range(det_result.shape[0]):
                 start_time = time.time()
                 pts = order_point(det_result[i])

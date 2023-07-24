@@ -1,4 +1,4 @@
-FROM paidax/dev-containers:modelscope-v0.7
+FROM paidax/dev-containers:modelscope-v0.7.1
 
 RUN pip install \
     fastapi \
@@ -9,6 +9,8 @@ RUN pip install \
 
 WORKDIR /home/ocr
 
-COPY . .
+COPY ./download_model.py /home/ocr/download_model.py
 
 RUN python download_model.py
+
+COPY . .

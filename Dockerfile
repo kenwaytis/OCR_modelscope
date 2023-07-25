@@ -1,4 +1,4 @@
-FROM paidax/dev-containers:modelscope-v0.7.1
+FROM paidax/dev-containers:modelscope-v0.8
 
 RUN pip install \
     fastapi \

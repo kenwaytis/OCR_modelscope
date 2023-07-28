@@ -29,38 +29,59 @@ def sort_result(polygons):
 @app.post("/predict/ocr_system")
 async def prediction(items:Image):
     try:
-        results = []
-        for img_b64 in items.images:
-            result_single = []
-            img_binary = base64.b64decode(img_b64)
-            buffer = np.frombuffer(img_binary,dtype=np.uint8)
-            img = cv2.imdecode(buffer,flags=cv2.IMREAD_COLOR)
-            det_result = ocr_detection(img)
-            logger.debug(f"det_result: {det_result}")
-            det_result = det_result['polygons'] 
-            det_result = sort_result(det_result)
-            for i in range(det_result.shape[0]):
-                start_time = time.time()
-                pts = order_point(det_result[i])
-                logger.debug(f"pts: {pts}")
-                image_crop = crop_image(img, pts)
-                output = ocr_recognition(image_crop)
-                end_time = time.time()
-                each_text = {
-                    "confidence": end_time-start_time,
-                    "text": output['text'][0],
-                    "text_region": pts.tolist()
-                }
-                result_single.append(each_text)
+        try:
+            results = []
+            for img_b64 in items.images:
+                result_single = []
+                img_binary = base64.b64decode(img_b64)
+                buffer = np.frombuffer(img_binary,dtype=np.uint8)
+                img = cv2.imdecode(buffer,flags=cv2.IMREAD_COLOR)
+                det_result = ocr_detection(img)
+                logger.debug(f"det_result: {det_result}")
+                det_result = det_result['polygons'] 
+                det_result = sort_result(det_result)
+                for i in range(det_result.shape[0]):
+                    start_time = time.time()
+                    pts = order_point(det_result[i])
+                    logger.debug(f"pts: {pts}")
+                    image_crop = crop_image(img, pts)
+                    output = ocr_recognition(image_crop)
+                    end_time = time.time()
+                    each_text = {
+                        "confidence": end_time-start_time,
+                        "text": output['text'][0],
+                        "text_region": pts.tolist()
+                    }
+                    result_single.append(each_text)
+                results.append(result_single)
+                
+            final_result = {
+                "msg": "", 
+                "results": results,
+                "status": "000"
+            }
+            logger.info(results)
+            return final_result
+        except:
+            logger.debug("No text detected, try using rec directly.")
+            start_time = time.time()
+            output = ocr_recognition(img)
+            logger.debug(f"output: \n{output}")
+            end_time = time.time()
+            each_text = {
+                "confidence": end_time-start_time,
+                "text": output['text'][0],
+                "text_region": []
+            }
+            result_single.append(each_text)
             results.append(result_single)
-            
-        final_result = {
-            "msg": "", 
-            "results": results,
-            "status": "000"
-        }
-        logger.info(results)
-        return final_result
+            final_result = {
+                "msg": "", 
+                "results": results,
+                "status": "000"
+            }
+            logger.info(results)
+            return final_result
     except Exception as e:
         logger.error(e)
         res = {
@@ -170,3 +191,4 @@ async def health_check():
 
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
